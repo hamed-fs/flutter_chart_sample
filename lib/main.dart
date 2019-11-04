@@ -8,13 +8,13 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      showPerformanceOverlay: true,
+      showPerformanceOverlay: false,
       debugShowCheckedModeBanner: false,
       title: 'Flutter Chart Demo',
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home:HomePage(),
+      home:HomePage(title: "Chart Demo",),
     );
   }
 }
