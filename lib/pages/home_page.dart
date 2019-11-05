@@ -4,6 +4,7 @@ import 'package:flutter_chart_sample/models/chart_item.dart';
 import 'package:flutter_chart_sample/models/library_item.dart';
 import 'package:flutter_chart_sample/pages/bar_chart_page.dart';
 import 'package:flutter_chart_sample/pages/bezier_line_chart_page.dart';
+import 'package:flutter_chart_sample/pages/candle_stick_chart_page.dart';
 import 'package:flutter_chart_sample/pages/line_chart_page.dart';
 import 'package:flutter_chart_sample/pages/pie_chart_page.dart';
 
@@ -41,6 +42,15 @@ class _HomePageState extends State<HomePage> {
         ChartItem(
           'Line Chart',
           BezierLineChartPage(),
+        )
+      ],
+    ),
+    LibraryItem(
+      'Candle Chart',
+      [
+        ChartItem(
+          'Candle Chart',
+          CandleChartPage(),
         )
       ],
     ),
