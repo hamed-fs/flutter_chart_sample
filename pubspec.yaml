@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   mp_chart:
     path: ../mp_chart
+  bezier_chart: "^1.0.15"
 
   cupertino_icons: ^0.1.2
 
