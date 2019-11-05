@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter_chart_sample/models/chart_item.dart';
+import 'package:flutter_chart_sample/models/library_item.dart';
 import 'package:flutter_chart_sample/pages/bar_chart_page.dart';
 import 'package:flutter_chart_sample/pages/line_chart_page.dart';
 import 'package:flutter_chart_sample/pages/pie_chart_page.dart';
@@ -13,6 +16,26 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final List<LibraryItem> libraryItems = [
+    LibraryItem(
+      'MP CHARTS',
+      [
+        ChartItem(
+          'Line Chart',
+          LineChartPage(),
+        ),
+        ChartItem(
+          'Bar Chart',
+          BarChartPage(),
+        ),
+        ChartItem(
+          'Pie Chart',
+          PieChartPage(),
+        ),
+      ],
+    )
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,59 +44,38 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Center(
         child: Column(
-          children: <Widget>[
-            Flexible(child: _buildList(context)),
-          ],
+          children: _getListItems(context, libraryItems),
         ),
       ),
     );
   }
 }
 
-Widget _buildList(BuildContext context) {
-  return SingleChildScrollView(
-    child: Card(
-      child: ExpansionTile(
-        title: Text(
-          'Flutter Charts',
-          style: TextStyle(fontWeight: FontWeight.bold),
+void _showChart(BuildContext context, Widget screen) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => screen),
+  );
+}
+
+List<Widget> _getListItems(
+    BuildContext context, List<LibraryItem> libraryItems) {
+  return libraryItems
+      .map(
+        (libraryItem) => ExpansionTile(
+          title: Text(
+            libraryItem.title,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          children: libraryItem.chartItems
+              .map(
+                (chartItem) => ListTile(
+                  title: Text(chartItem.title),
+                  onTap: () => _showChart(context, chartItem.screen),
+                ),
+              )
+              .toList(),
         ),
-        children: <Widget>[
-          ListTile(
-            title: Text('Bar Chart'),
-            onTap: () => _showLineChart(context),
-          ),
-          ListTile(
-            title: Text('Line Chart'),
-            onTap: () => _showBarChart(context),
-          ),
-          ListTile(
-            title: Text('Pie Chart'),
-            onTap: () => _showPieChart(context),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-void _showLineChart(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => LineChartPage()),
-  );
-}
-
-void _showBarChart(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => BarChartPage()),
-  );
-}
-
-void _showPieChart(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => PieChartPage()),
-  );
+      )
+      .toList();
 }
