@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_chart_sample/action_state.dart';
 import 'package:flutter_chart_sample/util.dart';
 import 'package:mp_chart/mp/chart/line_chart.dart';
 import 'package:mp_chart/mp/controller/line_chart_controller.dart';
@@ -33,15 +32,16 @@ class LineChartPage extends StatelessWidget {
 
 class LineChartBasic extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
+  LineChartBasicState createState() {
     return LineChartBasicState();
   }
 }
 
-class LineChartBasicState extends LineActionState<LineChartBasic> {
+class LineChartBasicState extends State<LineChartBasic> {
   var random = Random(1);
   int _count = 45;
   double _range = 180.0;
+  LineChartController controller;
 
   @override
   void initState() {
@@ -90,10 +90,7 @@ class LineChartBasicState extends LineActionState<LineChartBasic> {
                         "$_count",
                         textDirection: TextDirection.ltr,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: ColorUtils.BLACK,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: ColorUtils.BLACK, fontSize: 12, fontWeight: FontWeight.bold),
                       )),
                 ],
               ),
@@ -118,10 +115,7 @@ class LineChartBasicState extends LineActionState<LineChartBasic> {
                         "${_range.toInt()}",
                         textDirection: TextDirection.ltr,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: ColorUtils.BLACK,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: ColorUtils.BLACK, fontSize: 12, fontWeight: FontWeight.bold),
                       )),
                 ],
               )
@@ -220,6 +214,7 @@ class LineChartBasicState extends LineActionState<LineChartBasic> {
 
     // draw points as solid circles
     set1.setDrawCircleHole(false);
+    set1.setDrawCircles(false);
 
     // customize legend entry
     set1.setFormLineWidth(1);
@@ -254,5 +249,14 @@ class LineChartBasicState extends LineActionState<LineChartBasic> {
       ..reset()
       ..animateX1(1500);
     return lineChart;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(getTitle()),
+        ),
+        body: getBody());
   }
 }
