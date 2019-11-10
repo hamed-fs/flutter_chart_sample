@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_chart_sample/action_state.dart';
 import 'package:flutter_chart_sample/util.dart';
 import 'package:mp_chart/mp/chart/pie_chart.dart';
 import 'package:mp_chart/mp/controller/pie_chart_controller.dart';
@@ -15,37 +14,19 @@ import 'package:mp_chart/mp/core/enums/legend_horizontal_alignment.dart';
 import 'package:mp_chart/mp/core/enums/legend_orientation.dart';
 import 'package:mp_chart/mp/core/enums/legend_vertical_alignment.dart';
 import 'package:mp_chart/mp/core/highlight/highlight.dart';
-import 'package:mp_chart/mp/core/image_loader.dart';
 import 'package:mp_chart/mp/core/poolable/point.dart';
 import 'package:mp_chart/mp/core/render/pie_chart_renderer.dart';
 import 'package:mp_chart/mp/core/utils/color_utils.dart';
 import 'package:mp_chart/mp/core/value_formatter/percent_formatter.dart';
 
-class PieChartPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Pie Chart Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: PieChartBasic(),
-    );
-  }
-}
-
 class PieChartBasic extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return PieChartBasicState();
-  }
+  State<StatefulWidget> createState() => PieChartBasicState();
 }
 
-class PieChartBasicState extends PieActionState<PieChartBasic>
-    implements OnChartValueSelectedListener {
+class PieChartBasicState extends State<PieChartBasic> implements OnChartValueSelectedListener {
+  PieChartController _controller;
   PercentFormatter _formatter = PercentFormatter();
-  var random = Random(1);
   int _count = 4;
   double _range = 10.0;
 
@@ -53,22 +34,14 @@ class PieChartBasicState extends PieActionState<PieChartBasic>
   void initState() {
     _initController();
     _initPieData(_count, _range);
+
     super.initState();
   }
 
-  @override
-  String getTitle() => "Pie Chart Basic";
-
-  @override
   Widget getBody() {
     return Stack(
       children: <Widget>[
-        Positioned(
-            right: 0,
-            left: 0,
-            top: 0,
-            bottom: 100,
-            child: PieChart(controller)),
+        Positioned(right: 0, left: 0, top: 0, bottom: 100, child: PieChart(_controller)),
         Positioned(
           left: 0,
           right: 0,
@@ -95,13 +68,10 @@ class PieChartBasicState extends PieActionState<PieChartBasic>
                   Container(
                       padding: EdgeInsets.only(right: 15.0),
                       child: Text(
-                        "$_count",
+                        '$_count',
                         textDirection: TextDirection.ltr,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: ColorUtils.BLACK,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: ColorUtils.BLACK, fontSize: 12, fontWeight: FontWeight.bold),
                       )),
                 ],
               ),
@@ -123,13 +93,10 @@ class PieChartBasicState extends PieActionState<PieChartBasic>
                   Container(
                       padding: EdgeInsets.only(right: 15.0),
                       child: Text(
-                        "${_range.toInt()}",
+                        '${_range.toInt()}',
                         textDirection: TextDirection.ltr,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: ColorUtils.BLACK,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: ColorUtils.BLACK, fontSize: 12, fontWeight: FontWeight.bold),
                       )),
                 ],
               )
@@ -140,37 +107,11 @@ class PieChartBasicState extends PieActionState<PieChartBasic>
     );
   }
 
-  final List<String> PARTIES = List()
-    ..add("Party A")
-    ..add("Party B")
-    ..add("Party C")
-    ..add("Party D")
-    ..add("Party E")
-    ..add("Party F")
-    ..add("Party G")
-    ..add("Party H")
-    ..add("Party I")
-    ..add("Party J")
-    ..add("Party K")
-    ..add("Party L")
-    ..add("Party M")
-    ..add("Party N")
-    ..add("Party O")
-    ..add("Party P")
-    ..add("Party Q")
-    ..add("Party R")
-    ..add("Party S")
-    ..add("Party T")
-    ..add("Party U")
-    ..add("Party V")
-    ..add("Party W")
-    ..add("Party X")
-    ..add("Party Y")
-    ..add("Party Z");
+  final List<String> PARTIES = List()..add('Party A')..add('Party B')..add('Party C')..add('Party D')..add('Party E')..add('Party F')..add('Party G')..add('Party H')..add('Party I')..add('Party J')..add('Party K')..add('Party L')..add('Party M')..add('Party N')..add('Party O')..add('Party P')..add('Party Q')..add('Party R')..add('Party S')..add('Party T')..add('Party U')..add('Party V')..add('Party W')..add('Party X')..add('Party Y')..add('Party Z');
 
   void _initController() {
-    var desc = Description()..enabled = false;
-    controller = PieChartController(
+    Description desc = Description()..enabled = false;
+    _controller = PieChartController(
         legendSettingFunction: (legend, controller) {
           _formatter.setPieChartPainter(controller);
           legend
@@ -207,20 +148,13 @@ class PieChartBasicState extends PieActionState<PieChartBasic>
   }
 
   void _initPieData(int count, double range) async {
-    var img = await ImageLoader.loadImage('assets/img/star.png');
     List<PieEntry> entries = List();
 
-    // NOTE: The order of the entries when being added to the entries array determines their position around the center of
-    // the chart.
     for (int i = 0; i < count; i++) {
-      entries.add(PieEntry(
-        value: ((random.nextDouble() * range) + range / 5),
-        label: PARTIES[i % PARTIES.length],
-        icon: img,
-      ));
+      entries.add(PieEntry(value: ((Random().nextDouble() * range) + range / 5), label: PARTIES[i % PARTIES.length]));
     }
 
-    PieDataSet dataSet = PieDataSet(entries, "Election Results");
+    PieDataSet dataSet = PieDataSet(entries, 'Election Results');
 
     dataSet.setDrawIcons(false);
 
@@ -228,7 +162,6 @@ class PieChartBasicState extends PieActionState<PieChartBasic>
     dataSet.setIconsOffset(MPPointF(0, 40));
     dataSet.setSelectionShift(5);
 
-    // add a lot of colors
     List<Color> colors = List();
     for (Color c in ColorUtils.VORDIPLOM_COLORS) colors.add(c);
     for (Color c in ColorUtils.JOYFUL_COLORS) colors.add(c);
@@ -238,8 +171,8 @@ class PieChartBasicState extends PieActionState<PieChartBasic>
     colors.add(ColorUtils.HOLO_BLUE);
     dataSet.setColors1(colors);
 
-    controller.data = PieData(dataSet);
-    controller.data
+    _controller.data = PieData(dataSet);
+    _controller.data
       ..setValueFormatter(_formatter)
       ..setValueTextSize(11)
       ..setValueTextColor(ColorUtils.WHITE)
@@ -255,6 +188,14 @@ class PieChartBasicState extends PieActionState<PieChartBasic>
   void onValueSelected(Entry e, Highlight h) {}
 
   String _generateCenterSpannableText() {
-    return "basic pie chart";
+    return 'Pie Chart Basic';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Pie Chart Basic')),
+      body: getBody(),
+    );
   }
 }

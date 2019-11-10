@@ -29,6 +29,7 @@ class CandleChartPage extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: Container(
+        color: Colors.white,
         height: 500.0,
         child: OHLCVGraph(
           data: sampleData,

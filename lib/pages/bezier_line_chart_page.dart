@@ -2,7 +2,33 @@ import 'package:flutter/material.dart';
 
 import 'package:bezier_chart/bezier_chart.dart';
 
-class BezierLineChartPage extends StatelessWidget {
+class BezierLineChartPage extends StatefulWidget {
+  @override
+  _BezierLineChartPageState createState() => _BezierLineChartPageState();
+}
+
+class _BezierLineChartPageState extends State<BezierLineChartPage> {
+  final _fromDate = DateTime(2018, 11, 22);
+  final _toDate = DateTime.now();
+
+  List<DataPoint<DateTime>> _dataset = List<DataPoint<DateTime>>();
+
+  void initialData() {
+    _dataset.add(DataPoint<DateTime>(value: 10, xAxis: DateTime.now().subtract(Duration(days: 2))));
+    _dataset.add(DataPoint<DateTime>(value: 50, xAxis: DateTime.now().subtract(Duration(days: 3))));
+    _dataset.add(DataPoint<DateTime>(value: 20, xAxis: DateTime.now().subtract(Duration(days: 35))));
+    _dataset.add(DataPoint<DateTime>(value: 80, xAxis: DateTime.now().subtract(Duration(days: 36))));
+    _dataset.add(DataPoint<DateTime>(value: 14, xAxis: DateTime.now().subtract(Duration(days: 65))));
+    _dataset.add(DataPoint<DateTime>(value: 30, xAxis: DateTime.now().subtract(Duration(days: 64))));
+  }
+
+  @override
+  void initState() {
+    initialData();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -11,24 +37,12 @@ class BezierLineChartPage extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: _buildBezierLineChart(context),
+      home: _buildBezierLineChart(context, _fromDate, _toDate, _dataset),
     );
   }
 }
 
-Widget _buildBezierLineChart(BuildContext context) {
-  final fromDate = DateTime(2018, 11, 22);
-  final toDate = DateTime.now();
-
-  final date1 = DateTime.now().subtract(Duration(days: 2));
-  final date2 = DateTime.now().subtract(Duration(days: 3));
-
-  final date3 = DateTime.now().subtract(Duration(days: 35));
-  final date4 = DateTime.now().subtract(Duration(days: 36));
-
-  final date5 = DateTime.now().subtract(Duration(days: 65));
-  final date6 = DateTime.now().subtract(Duration(days: 64));
-
+Widget _buildBezierLineChart(BuildContext context, DateTime fromDate, DateTime toDate, List<DataPoint<DateTime>> data) {
   return Center(
     child: Container(
       color: Colors.red,
@@ -41,29 +55,22 @@ Widget _buildBezierLineChart(BuildContext context) {
         selectedDate: toDate,
         series: [
           BezierLine(
-            label: "Duty",
+            label: 'Duty',
             onMissingValue: (dateTime) {
               if (dateTime.month.isEven) {
                 return 10.0;
               }
               return 5.0;
             },
-            data: [
-              DataPoint<DateTime>(value: 10, xAxis: date1),
-              DataPoint<DateTime>(value: 50, xAxis: date2),
-              DataPoint<DateTime>(value: 20, xAxis: date3),
-              DataPoint<DateTime>(value: 80, xAxis: date4),
-              DataPoint<DateTime>(value: 14, xAxis: date5),
-              DataPoint<DateTime>(value: 30, xAxis: date6),
-            ],
+            data: data,
           ),
         ],
         config: BezierChartConfig(
           verticalIndicatorStrokeWidth: 3.0,
           verticalIndicatorColor: Colors.black26,
           showVerticalIndicator: true,
-          verticalIndicatorFixedPosition: false,
-          backgroundColor: Colors.red,
+          verticalIndicatorFixedPosition: true,
+          backgroundColor: Theme.of(context).accentColor,
           footerHeight: 30.0,
         ),
       ),

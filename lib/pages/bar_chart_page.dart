@@ -1,8 +1,6 @@
 import 'dart:math';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_chart_sample/action_state.dart';
 import 'package:flutter_chart_sample/util.dart';
 import 'package:mp_chart/mp/chart/bar_chart.dart';
 import 'package:mp_chart/mp/controller/bar_chart_controller.dart';
@@ -20,36 +18,17 @@ import 'package:mp_chart/mp/core/enums/legend_vertical_alignment.dart';
 import 'package:mp_chart/mp/core/enums/x_axis_position.dart';
 import 'package:mp_chart/mp/core/enums/y_axis_label_position.dart';
 import 'package:mp_chart/mp/core/highlight/highlight.dart';
-import 'package:mp_chart/mp/core/image_loader.dart';
 import 'package:mp_chart/mp/core/utils/color_utils.dart';
 import 'package:mp_chart/mp/core/value_formatter/day_axis_value_formatter.dart';
 import 'package:mp_chart/mp/core/value_formatter/my_value_formatter.dart';
 
-class BarChartPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Bar Chart Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: BarChartBasic(),
-    );
-  }
-}
-
-
 class BarChartBasic extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return BarChartBasicState();
-  }
+  State<StatefulWidget> createState() => BarChartBasicState();
 }
 
-class BarChartBasicState extends BarActionState<BarChartBasic>
-    implements OnChartValueSelectedListener {
-  var random = Random(1);
+class BarChartBasicState extends State<BarChartBasic> implements OnChartValueSelectedListener {
+  BarChartController _controller;
   int _count = 12;
   double _range = 50.0;
 
@@ -57,10 +36,10 @@ class BarChartBasicState extends BarActionState<BarChartBasic>
   void initState() {
     _initController();
     _initBarData(_count, _range);
+
     super.initState();
   }
 
-  @override
   Widget getBody() {
     return Stack(
       children: <Widget>[
@@ -69,7 +48,7 @@ class BarChartBasicState extends BarActionState<BarChartBasic>
           left: 0,
           top: 0,
           bottom: 100,
-          child: BarChart(controller),
+          child: BarChart(_controller),
         ),
         Positioned(
           left: 0,
@@ -97,13 +76,10 @@ class BarChartBasicState extends BarActionState<BarChartBasic>
                   Container(
                       padding: EdgeInsets.only(right: 15.0),
                       child: Text(
-                        "$_count",
+                        '$_count',
                         textDirection: TextDirection.ltr,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: ColorUtils.BLACK,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: ColorUtils.BLACK, fontSize: 12, fontWeight: FontWeight.bold),
                       )),
                 ],
               ),
@@ -125,13 +101,10 @@ class BarChartBasicState extends BarActionState<BarChartBasic>
                   Container(
                       padding: EdgeInsets.only(right: 15.0),
                       child: Text(
-                        "${_range.toInt()}",
+                        '${_range.toInt()}',
                         textDirection: TextDirection.ltr,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: ColorUtils.BLACK,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: ColorUtils.BLACK, fontSize: 12, fontWeight: FontWeight.bold),
                       )),
                 ],
               )
@@ -142,31 +115,20 @@ class BarChartBasicState extends BarActionState<BarChartBasic>
     );
   }
 
-  @override
-  String getTitle() {
-    return "Bar Chart Basic";
-  }
-
   void _initController() {
-    var desc = Description()..enabled = false;
-    controller = BarChartController(
+    Description desc = Description()..enabled = false;
+    _controller = BarChartController(
         axisLeftSettingFunction: (axisLeft, controller) {
           axisLeft
             ..setLabelCount2(8, false)
             ..typeface = Util.LIGHT
-            ..setValueFormatter(MyValueFormatter("\$"))
+            ..setValueFormatter(MyValueFormatter('\$'))
             ..position = YAxisLabelPosition.OUTSIDE_CHART
             ..spacePercentTop = 15
             ..setAxisMinimum(0);
         },
         axisRightSettingFunction: (axisRight, controller) {
-          axisRight
-            ..drawGridLines = false
-            ..typeface = Util.LIGHT
-            ..setLabelCount2(8, false)
-            ..setValueFormatter(MyValueFormatter("\$"))
-            ..spacePercentTop = 15
-            ..setAxisMinimum(0);
+          axisRight.enabled = (false);
         },
         legendSettingFunction: (legend, controller) {
           legend
@@ -200,28 +162,22 @@ class BarChartBasicState extends BarActionState<BarChartBasic>
         description: desc);
   }
 
-  void _initData(int count, double range, ui.Image img) {
+  void _initData(int count, double range) {
     double start = 1;
-
     List<BarEntry> values = List();
 
     for (int i = start.toInt(); i < start + count; i++) {
-      double val = (random.nextDouble() * (range + 1));
+      double val = (Random().nextDouble() * (range + 1));
 
-      values.add(BarEntry(x: i.toDouble(), y: val, icon: img));
+      values.add(BarEntry(x: i.toDouble(), y: val));
     }
 
     BarDataSet set1;
 
-    set1 = BarDataSet(values, "The year 2017");
+    set1 = BarDataSet(values, 'The year 2017');
 
     set1.setDrawIcons(false);
-
-//            set1.setColors(ColorTemplate.MATERIAL_COLORS);
-
-    /*int startColor = ContextCompat.getColor(this, android.R.color.holo_blue_dark);
-            int endColor = ContextCompat.getColor(this, android.R.color.holo_blue_bright);
-            set1.setGradientColor(startColor, endColor);*/
+    set1.setDrawValues(false);
 
     Color startColor1 = ColorUtils.HOLO_ORANGE_LIGHT;
     Color startColor2 = ColorUtils.HOLO_BLUE_LIGHT;
@@ -246,16 +202,15 @@ class BarChartBasicState extends BarActionState<BarChartBasic>
     List<IBarDataSet> dataSets = List();
     dataSets.add(set1);
 
-    controller.data = BarData(dataSets);
-    controller.data
+    _controller.data = BarData(dataSets);
+    _controller.data
       ..setValueTextSize(10)
       ..setValueTypeface(Util.LIGHT)
       ..barWidth = 0.9;
   }
 
   void _initBarData(int count, double range) async {
-    var img = await ImageLoader.loadImage('assets/img/star.png');
-    _initData(count, range, img);
+    _initData(count, range);
     setState(() {});
   }
 
@@ -263,21 +218,13 @@ class BarChartBasicState extends BarActionState<BarChartBasic>
   void onNothingSelected() {}
 
   @override
-  void onValueSelected(Entry e, Highlight h) {
-//    if (e == null)
-//      return;
-//
-//    RectF bounds = onValueSelectedRectF;
-//    chart.getBarBounds((BarEntry) e, bounds);
-//    MPPointF position = chart.getPosition(e, AxisDependency.LEFT);
-//
-//    Log.i("bounds", bounds.toString());
-//    Log.i("position", position.toString());
-//
-//    Log.i("x-index",
-//        "low: " + chart.getLowestVisibleX() + ", high: "
-//            + chart.getHighestVisibleX());
-//
-//    MPPointF.recycleInstance(position);
+  void onValueSelected(Entry e, Highlight h) {}
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Bar Chart Basic')),
+      body: getBody(),
+    );
   }
 }

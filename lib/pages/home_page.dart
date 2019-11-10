@@ -28,11 +28,11 @@ class _HomePageState extends State<HomePage> {
         ),
         ChartItem(
           'Bar Chart',
-          BarChartPage(),
+          BarChartBasic(),
         ),
         ChartItem(
           'Pie Chart',
-          PieChartPage(),
+          PieChartBasic(),
         ),
       ],
     ),
@@ -78,8 +78,7 @@ void _showChart(BuildContext context, Widget screen) {
   );
 }
 
-List<Widget> _getListItems(
-    BuildContext context, List<LibraryItem> libraryItems) {
+List<Widget> _getListItems(BuildContext context, List<LibraryItem> libraryItems) {
   return libraryItems
       .map(
         (libraryItem) => ExpansionTile(

@@ -17,15 +17,12 @@ import 'package:mp_chart/mp/core/utils/color_utils.dart';
 
 class LineChartBasic extends StatefulWidget {
   @override
-  LineChartBasicState createState() {
-    return LineChartBasicState();
-  }
+  LineChartBasicState createState() => LineChartBasicState();
 }
 
 class LineChartBasicState extends State<LineChartBasic> {
-  final List<Entry> values = List();
-
-  LineChartController controller;
+  final List<Entry> values = List<Entry>();
+  LineChartController _controller;
 
   void _getInitialData() {
     int _count = 5;
@@ -85,7 +82,7 @@ class LineChartBasicState extends State<LineChartBasic> {
   }
 
   void _initController() {
-    var desc = Description()..enabled = false;
+    Description desc = Description()..enabled = false;
 
     LimitLine limitLine01 = LimitLine(60, 'Upper Limit');
     limitLine01.setLineWidth(2);
@@ -101,7 +98,7 @@ class LineChartBasicState extends State<LineChartBasic> {
     limitLine02.textSize = (10);
     limitLine02.typeface = Util.EXTRA_BOLD;
 
-    controller = LineChartController(
+    _controller = LineChartController(
       axisLeftSettingFunction: (axisLeft, controller) {
         axisLeft
           ..drawLimitLineBehindData = true
@@ -164,15 +161,15 @@ class LineChartBasicState extends State<LineChartBasic> {
     set1.setMode(Mode.LINEAR);
 
     List<ILineDataSet> dataSets = List();
-    dataSets.add(set1); // add the data sets
+    dataSets.add(set1);
 
-    controller.data = LineData.fromList(dataSets);
+    _controller.data = LineData.fromList(dataSets);
   }
 
   Widget _initLineChart() {
-    LineChart lineChart = LineChart(controller);
+    LineChart lineChart = LineChart(_controller);
 
-    controller.animator..reset();
+    _controller.animator..reset();
 
     return lineChart;
   }
